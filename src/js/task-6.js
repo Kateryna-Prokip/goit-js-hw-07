@@ -1,64 +1,35 @@
-const boxesContainer = document.querySelector('.boxes');
-const create = document.querySelector('button[data-create]');
-const destroy = document.querySelector('button[data-destroy]');
-const blockCounts = document.querySelector('input[type="number"]');
-const defaultBlockCountsValue = blockCounts.value;
-let countOfBlocks = 0;
+const boxesContainer = document.getElementById('boxes');
+const createButton = document.querySelector('button[data-create]');
+const destroyButton = document.querySelector('button[data-destroy]');
+const inputNumber = document.querySelector('input[type="number"]');
 
-function getRandomHexColor() {
-  return `#${Math.floor(Math.random() * 16777215)
-    .toString(16)
-    .padStart(6, 0)}`;
-}
-
-const setCount = event => {
-  const value = event.target.value;
-  if (value >= 1 && value <= 100 ) {
-    countOfBlocks = value;
-  } else {
-    countOfBlocks = 0;
-   }
+const getRandomHexColor = () => {
+  return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
 };
 
-const generatedBlocks = count => {
-  const resultArray = [];
+const createBoxes = amount => {
+  let boxesHTML = '';
+  let size = 30;
 
-  for (let i = 0; i < count; i++) {
-    resultArray.push({
-      width: 30 + i * 10,
-      height: 30 + i * 10,
-    });
+  for (let i = 0; i < amount; i++) {
+    boxesHTML += `<div style="width: ${size}px; height: ${size}px; background-color: ${getRandomHexColor()}"></div>`;
+    size += 10;
   }
 
-  return resultArray;
+  boxesContainer.innerHTML = boxesHTML;
 };
 
-const generatedLayout = blocksArray => {
-  return blocksArray
-    .map(block => {
-      return `<div style="
-        width: ${block.width}px; 
-        height: ${block.height}px; 
-        background-color: ${getRandomHexColor()}" >
-      </div>`;
-    })
-    .join('');
-};
-
-blockCounts.addEventListener('change', setCount);
-blockCounts.addEventListener('input', setCount);
-
-destroy.addEventListener('click', () => {
+const destroyBoxes = () => {
   boxesContainer.innerHTML = '';
-  blockCounts.value = defaultBlockCountsValue;
-});
+};
 
-create.addEventListener('click', () => {
-  if (countOfBlocks > 0) {
-    const blocks = generatedBlocks(countOfBlocks);
-    boxesContainer.innerHTML = '';
-    boxesContainer.insertAdjacentHTML('beforeend', generatedLayout(blocks));
-    blockCounts.value = defaultBlockCountsValue;
-    countOfBlocks = 0;
+createButton.addEventListener('click', () => {
+  const amount = parseInt(inputNumber.value);
+
+  if (amount >= 1 && amount <= 100) {
+    createBoxes(amount);
+    inputNumber.value = '';
   }
 });
+
+destroyButton.addEventListener('click', destroyBoxes);
